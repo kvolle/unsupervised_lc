@@ -14,7 +14,7 @@ def augment(image):
     flipped_inputs = tf.keras.layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(224, 224, 3))(image)
     contrasted = tf.keras.layers.experimental.preprocessing.RandomContrast(0.125)(flipped_inputs)
     zoomed = tf.keras.layers.experimental.preprocessing.RandomZoom(0.25)(contrasted)
-    translated = tf.keras.layers.experimental.preprocessing.RandomTranslate(0.125)(zoomed)
+    translated = tf.keras.layers.experimental.preprocessing.RandomTranslation(0.125, 0.12)(zoomed)
     cropped = tf.keras.layers.experimental.preprocessing.CenterCrop(224, 224)(translated)
     #zoomed_inputs = tf.keras.layers.experimental.preprocessing.RandomZoom(0.1)(rotated_inputs)
 
