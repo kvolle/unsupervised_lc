@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 print(tf.__version__)
 
-from tensorflow.keras import layers
+from tensorflow.keras.layers import Conv2D, MaxPool2D, Dense
 from tensorflow.keras import models
 from tensorflow.keras import applications
 from tensorflow.keras import regularizers
