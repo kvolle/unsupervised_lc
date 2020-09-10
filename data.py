@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing import image
 
 def data_source(directory):
-    datagen = ImageDataGenerator(rescale=1./255)
+    datagen = image.ImageDataGenerator(rescale=1./255)
     generator = datagen.flow_from_directory(
         directory,
         target_size=(256, 256),
