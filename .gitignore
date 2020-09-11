@@ -3,6 +3,9 @@ Data/
 Checkpoints/
 Logs/
 *.zip
+*.png
+*.jpg
+*.jpeg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
