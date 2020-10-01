@@ -25,10 +25,10 @@ def clr_loss(vects):
     print(x.shape)
     dots = tf.matmul(x, y, transpose_b=True)
     identity = tf.eye(batch)
-    comp = tf.ones(shape=(batch, batch)) - identity
+    comp = tf.linalg.band_part(tf.ones(shape=(batch, batch)), 1, 1) - identity
     true = tf.matmul(identity, dots)
     false = comp - tf.matmul(comp, dots)
-    return 16.*true + false
+    return true + false
 
 # Define data source and declare input
 train = data.data_source("./Data")
@@ -72,7 +72,7 @@ model.compile(optimizer=optimizers.Adam(), loss=[distance_loss])
 #z = model.predict(x)
 
 # Train the model
-EPOCHS = 100
+EPOCHS = 50
 model.fit(train, epochs=EPOCHS)
 
 _, out1, out2 = model.predict(train)
