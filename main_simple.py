@@ -22,12 +22,12 @@ def eucl_dist_output_shape(shapes):
 def clr_loss(vects):
     x, y = vects
     batch, feats = x.shape
-    print(x.shape)
     dots = tf.matmul(x, y, transpose_b=True)
     identity = tf.eye(batch)
-    comp = tf.linalg.band_part(tf.ones(shape=(batch, batch)), 1, 1) - identity
+    comp = tf.linalg.band_part(tf.ones(shape=(batch, batch)), 2, 2) - identity
     true = tf.matmul(identity, dots)
     false = comp - tf.matmul(comp, dots)
+    print(true.shape)
     return true + false
 
 # Define data source and declare input
@@ -61,7 +61,7 @@ model = models.Model(inputs=[input_img], outputs=[distance, latent_one, latent_t
 # Define the loss function
 # (This should also be pulled to new file)
 def distance_loss(y_true, y_pred):
-    return tf.keras.backend.mean(tf.keras.backend.abs(y_pred))
+    return tf.keras.backend.sum(tf.keras.backend.abs(y_pred))
 
 # Compile the model
 model.compile(optimizer=optimizers.Adam(), loss=[distance_loss])
@@ -72,7 +72,7 @@ model.compile(optimizer=optimizers.Adam(), loss=[distance_loss])
 #z = model.predict(x)
 
 # Train the model
-EPOCHS = 50
+EPOCHS = 5
 model.fit(train, epochs=EPOCHS)
 
 _, out1, out2 = model.predict(train)
