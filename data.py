@@ -26,14 +26,33 @@ def augment(image):
 
 @tf.function
 def augment_image(image):
-    batch = tf.shape(image)[0]
+    batch = tf.shape(image, out_type=tf.int32)[0] 
+    #assert 1==2, "Batch :%d"%batch
+    #print(tf.shape(image))
     if tf.random.uniform(()) > 0.5:
         image = tf.image.flip_left_right(image)
     image = tf.image.random_brightness(image, 0.25)
     ##if tf.random.uniform(()) > 0.9:
     ##    image = tf.image.rgb_to_grayscale(image)
     sf = .2*tf.random.uniform(())+0.9
-    image = tf.image.random_crop(image, [batch, sf*360, sf*480, 3])
+    if (batch != None):
+        image = tf.image.random_crop(image, [batch, int(sf*360), int(sf*480), 3])
     image = tf.image.resize(image, [ 360, 480])
     ##return tf.image.central_crop(image, (224, 224))
     return tf.image.crop_to_bounding_box(image, 68, 128, 224, 224)
+
+def local_datasets(directory):
+    t = tf.keras.preprocessing.image_dataset_from_directory(
+        directory,
+        validation_split=0.2,
+        subset="training",
+        seed=123,
+        batch_size=32)
+    v = tf.keras.preprocessing.image_dataset_from_directory(
+        directory,
+        validation_split=0.2,
+        subset="validation",
+        seed=123,
+        batch_size=32)
+    return [t, v]
+
