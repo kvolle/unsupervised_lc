@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 print(tf.__version__)
 
-from tensorflow.keras.layers import Conv2D, MaxPool2D, Dense, Input, Flatten, BatchNormalization, ReLU, UpSampling2D, concatenate, Activation
+from tensorflow.keras.layers import Conv2D, MaxPool2D, Dense, Input, Flatten, BatchNormalization, ReLU, UpSampling2D, concatenate, Activation, Reshape
 from tensorflow.keras import models
 from tensorflow.keras import applications
 from tensorflow.keras import regularizers
@@ -25,6 +25,7 @@ def simple():
     flat = Flatten()(pool4)
     dense1 = Dense(128, activation='relu')(flat)
     out = Dense(64)(dense1)
+    out, _ = tf.linalg.normalize(out, axis=1)
     mod = models.Model(inputs = input_img, outputs = out)
     return mod
 
@@ -46,6 +47,7 @@ def autoencoder():
     n_block1 = 16
     n_block2 = 32
     n_block3 = 64
+    latent_dim = 128
 
     input_img = Input((224, 224, 3))
     block_1 = conv_block(input_img, n_block1)
@@ -58,7 +60,12 @@ def autoencoder():
     block_6 = conv_block(block_5, n_block3)
     block_7 = conv_block(block_6, n_block3)
     pool_3, indices_3  = max_pool_arg(block_7, 2)
-    latent = Flatten()(pool_3)
+    dense1 = Flatten()(pool_3)
+    
+    latent = Dense(latent_dim)(dense1)
+    
+    unlatent = Dense(28*28*n_block3)(latent)
+    reshaped = Reshape(target_shape=(28,28,n_block3))(unlatent)
     unpool_1 = unpool(pool_3, indices_3, 2)
     deconv_block_1 = conv_block(unpool_1, n_block3)
     deconv_block_2 = conv_block(deconv_block_1, n_block3)
