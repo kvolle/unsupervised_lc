@@ -82,7 +82,7 @@ EPOCHS = 25
 model.fit(train, epochs=EPOCHS)
 
 _, out1, out2 = model.predict(train)
-matrix = np.matmul(out1, out2.T)
-np.savetxt("./out_vec1.csv", out1, delimiter=",")
-np.savetxt("./out_vec2.csv", out2, delimiter=",")
+matrix = np.matmul(out1[0:5,:], out2[0:5,:].T)
+np.savetxt("./out_vec1.csv", out1[0:5,:], delimiter=",")
+np.savetxt("./out_vec2.csv", out2[0:5,:], delimiter=",")
 np.savetxt("./out_mat.csv", matrix, delimiter=",")
