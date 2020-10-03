@@ -31,8 +31,8 @@ def distance_loss(y_true, y_pred):
     dots = tf.matmul(x, y, transpose_b=True)
     identity = tf.eye(batch)
     comp = tf.linalg.band_part(tf.ones(shape=(batch, batch)), 2, 2) - identity
-    true = identity - tf.matmul(identity, dots)
-    false = tf.matmul(comp, dots)
+    true = identity - tf.multiply(identity, dots)
+    false = tf.multiply(comp, dots)
     return K.sum(true) + K.sum(false)
 
 # Define data source and declare input
@@ -78,7 +78,7 @@ model.compile(optimizer=optimizers.Adam(), loss=[distance_loss, None, None])
 #z = model.predict(x)
 
 # Train the model
-EPOCHS = 25
+EPOCHS = 5
 model.fit(train, epochs=EPOCHS)
 
 _, out1, out2 = model.predict(train)
